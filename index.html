@@ -194,7 +194,51 @@ function animate() {
 }
 
 animate();
-</script>
+
+<canvas id="chart" style="
+  position:absolute;
+  bottom:30px;
+  left:30px;
+  width:300px;
+  height:200px;
+  z-index:20;
+"></canvas>
+
+ <script>
+   ...dein kompletter Neon-Code...
+
+   animate();
+
+   // 🔥 Glow Chart
+   const chart = document.getElementById("chart");
+   const cctx = chart.getContext("2d");
+
+   chart.width = 300;
+   chart.height = 200;
+
+   const data = [80, 50, 100];
+   const colors = ["#ff00ff", "#00ffff", "#ffaa00"];
+
+   function drawChart() {
+     cctx.clearRect(0, 0, chart.width, chart.height);
+
+     data.forEach((val, i) => {
+       const x = 40 + i * 80;
+       const y = 160 - val;
+
+       cctx.fillStyle = colors[i];
+       cctx.shadowBlur = 25;
+       cctx.shadowColor = colors[i];
+
+       cctx.fillRect(x, y, 40, val);
+     });
+   }
+
+   drawChart();
+</script> 
+
 
 </body>
 </html>
+
+
