@@ -3,299 +3,379 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lightscapes – Energy Geometry</title>
+  <title>Lightscapes – Neon Energy Generator</title>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     html, body {
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #000;
       font-family: Arial, sans-serif;
+      background: #000;
     }
 
     body {
+      position: relative;
       background:
-        radial-gradient(circle at center, rgba(120, 0, 180, 0.35) 0%, transparent 45%),
-        radial-gradient(circle at 70% 30%, rgba(0, 200, 255, 0.25) 0%, transparent 40%),
-        radial-gradient(circle at 30% 70%, rgba(255, 200, 0, 0.18) 0%, transparent 35%),
+        radial-gradient(circle at 50% 50%, rgba(120, 0, 180, 0.25) 0%, transparent 38%),
+        radial-gradient(circle at 75% 25%, rgba(0, 220, 255, 0.12) 0%, transparent 28%),
+        radial-gradient(circle at 20% 75%, rgba(255, 180, 0, 0.10) 0%, transparent 24%),
         #000;
     }
 
     canvas {
       display: block;
+    }
+
+    #art {
+      position: fixed;
+      inset: 0;
       width: 100%;
       height: 100%;
+      z-index: 1;
+    }
+
+    #radar {
+      position: absolute;
+      top: 26px;
+      right: 26px;
+      width: 270px;
+      height: 270px;
+      z-index: 5;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 22px;
+      backdrop-filter: blur(8px);
+      box-shadow:
+        0 0 30px rgba(0, 255, 255, 0.10),
+        0 0 45px rgba(180, 0, 255, 0.08);
     }
 
     .overlay {
       position: absolute;
-      top: 24px;
-      left: 24px;
-      z-index: 10;
-      max-width: 420px;
-      padding: 20px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.05);
+      top: 26px;
+      left: 26px;
+      z-index: 6;
+      max-width: 430px;
+      padding: 20px 22px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 0 40px rgba(180,0,255,0.15);
+      box-shadow: 0 0 35px rgba(180, 0, 255, 0.12);
     }
 
     .overlay h1 {
-      font-size: 1.8rem;
-      color: #f5d7ff;
-      text-shadow: 0 0 25px rgba(255,100,255,0.5);
+      font-size: 1.9rem;
+      color: #f2d8ff;
+      margin-bottom: 10px;
+      text-shadow: 0 0 18px rgba(255, 120, 255, 0.35);
     }
 
     .overlay p {
-      margin-top: 10px;
-      color: rgba(255,255,255,0.8);
-      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.84);
+      line-height: 1.55;
+      font-size: 0.98rem;
     }
 
     .signature {
       margin-top: 12px;
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 0.83rem;
+      letter-spacing: 0.04em;
+    }
+
+    .hint {
+      position: absolute;
+      left: 26px;
+      bottom: 26px;
+      z-index: 6;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.72);
+      font-size: 0.9rem;
+      backdrop-filter: blur(8px);
+    }
+
+    @media (max-width: 900px) {
+      #radar {
+        top: auto;
+        right: 16px;
+        bottom: 16px;
+        width: 220px;
+        height: 220px;
+      }
+
+      .overlay {
+        top: 16px;
+        left: 16px;
+        right: 16px;
+        max-width: none;
+      }
+
+      .hint {
+        left: 16px;
+        bottom: 16px;
+        max-width: 52%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      #radar {
+        display: none;
+      }
+
+      .hint {
+        right: 16px;
+        max-width: none;
+      }
+
+      .overlay h1 {
+        font-size: 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="overlay">
+    <h1>Lightscapes</h1>
+    <p>
+      A digital space where light, movement and energy become visible.
+      Move your mouse and create glowing geometric fields, flowing neon lines
+      and layered visual structures.
+    </p>
+    <div class="signature">Interactive visual artwork</div>
+  </div>
 
-<div class="overlay">
-  <h1>Lightscapes</h1>
-  <p>
-    A space where light becomes structure,  
-    and movement reveals hidden energy.
-  </p>
-  <div class="signature">Interactive Light Art</div>
-</div>
+  <div class="hint">Move slowly for longer glowing structures ✧</div>
 
-<canvas id="art"></canvas>
+  <canvas id="art"></canvas>
+  <canvas id="radar"></canvas>
 
-<script>
-const canvas = document.getElementById("art");
-const ctx = canvas.getContext("2d");
+  <script>
+    const canvas = document.getElementById("art");
+    const ctx = canvas.getContext("2d");
 
-let w = canvas.width = window.innerWidth;
-let h = canvas.height = window.innerHeight;
+    const radar = document.getElementById("radar");
+    const rctx = radar.getContext("2d");
 
-let points = [];
-let hue = 260;
+    let w = canvas.width = window.innerWidth;
+    let h = canvas.height = window.innerHeight;
 
-window.addEventListener("resize", () => {
-  w = canvas.width = window.innerWidth;
-  h = canvas.height = window.innerHeight;
-});
+    let points = [];
+    let hue = 260;
 
-class Point {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
+    const radarLabels = ["Art", "Energy", "Flow", "Emotion"];
+    const radarValues = [0.92, 0.78, 0.84, 0.68];
 
-    this.vx = (Math.random() - 0.5) * 1.5;
-    this.vy = (Math.random() - 0.5) * 1.5;
+    function resizeAll() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
 
-    this.life = 280;
-    this.hue = hue + Math.random() * 80;
-  }
+      const radarRect = radar.getBoundingClientRect();
+      radar.width = Math.max(220, Math.floor(radarRect.width));
+      radar.height = Math.max(220, Math.floor(radarRect.height));
+    }
 
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
+    resizeAll();
+    window.addEventListener("resize", resizeAll);
 
-    this.vx *= 0.992;
-    this.vy *= 0.992;
+    class Point {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.vx = (Math.random() - 0.5) * 1.8;
+        this.vy = (Math.random() - 0.5) * 1.8;
+        this.life = 240;
+        this.hue = hue + Math.random() * 90;
+      }
 
-    this.life -= 1;
-  }
-}
-
-function addPoints(x, y) {
-  for (let i = 0; i < 8; i++) {
-    points.push(new Point(x, y));
-  }
-}
-
-window.addEventListener("mousemove", (e) => {
-  addPoints(e.x, e.y);
-  hue += 0.6;
-});
-
-function drawConnections() {
-  for (let i = 0; i < points.length; i++) {
-    for (let j = i + 1; j < points.length; j++) {
-
-      const dx = points[i].x - points[j].x;
-      const dy = points[i].y - points[j].y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-
-      if (dist < 180) {
-
-        const alpha = (1 - dist / 180) * 0.25;
-
-        const color = `hsla(${(points[i].hue + points[j].hue)/2}, 100%, 65%, ${alpha})`;
-
-        ctx.beginPath();
-        ctx.moveTo(points[i].x, points[i].y);
-        ctx.lineTo(points[j].x, points[j].y);
-
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 1.4;
-        ctx.shadowBlur = 40;
-        ctx.shadowColor = color;
-
-        ctx.stroke();
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vx *= 0.994;
+        this.vy *= 0.994;
+        this.life -= 1;
       }
     }
-  }
-}
 
-function drawTriangles() {
-  for (let i = 0; i < points.length - 2; i++) {
-
-    const p1 = points[i];
-    const p2 = points[i + 1];
-    const p3 = points[i + 2];
-
-    const color = `hsla(${p1.hue}, 100%, 65%, 0.07)`;
-
-    ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
-    ctx.lineTo(p3.x, p3.y);
-    ctx.closePath();
-
-    ctx.fillStyle = color;
-    ctx.shadowBlur = 60;
-    ctx.shadowColor = color;
-    ctx.fill();
-  }
-}
-
-function animate() {
-  ctx.fillStyle = "rgba(0,0,0,0.02)";
-  ctx.fillRect(0, 0, w, h);
-
-  for (let i = points.length - 1; i >= 0; i--) {
-    points[i].update();
-    if (points[i].life <= 0) {
-      points.splice(i, 1);
+    function addPoints(x, y) {
+      for (let i = 0; i < 7; i++) {
+        points.push(new Point(x, y));
+      }
     }
-  }
 
-  drawConnections();
-  drawTriangles();
+    window.addEventListener("mousemove", (e) => {
+      addPoints(e.clientX, e.clientY);
+      hue += 0.8;
+      if (hue > 360) hue = 220;
+    });
 
-  requestAnimationFrame(animate);
-}
+    window.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      addPoints(touch.clientX, touch.clientY);
+      hue += 0.8;
+      if (hue > 360) hue = 220;
+    }, { passive: false });
 
-animate();
+    window.addEventListener("click", (e) => {
+      for (let i = 0; i < 24; i++) {
+        points.push(new Point(e.clientX, e.clientY));
+      }
+    });
 
-<canvas id="chart" style="
-  position:absolute;
-  bottom:30px;
-  left:30px;
-  width:300px;
-  height:200px;
-  z-index:20;
-"></canvas>
+    function drawConnections() {
+      for (let i = 0; i < points.length; i++) {
+        for (let j = i + 1; j < points.length; j++) {
+          const dx = points[i].x - points[j].x;
+          const dy = points[i].y - points[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
 
- <script>
-   ...dein kompletter Neon-Code...
+          if (dist < 170) {
+            const alpha = (1 - dist / 170) * 0.22;
+            const color = `hsla(${(points[i].hue + points[j].hue) / 2}, 100%, 65%, ${alpha})`;
 
-   animate();
+            ctx.beginPath();
+            ctx.moveTo(points[i].x, points[i].y);
+            ctx.lineTo(points[j].x, points[j].y);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1.3;
+            ctx.shadowBlur = 26;
+            ctx.shadowColor = color;
+            ctx.stroke();
+          }
+        }
+      }
+    }
 
-   // 🔥 Glow Chart
-   const chart = document.getElementById("chart");
-   const cctx = chart.getContext("2d");
+    function drawTriangles() {
+      for (let i = 0; i < points.length - 2; i++) {
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = points[i + 2];
 
-   chart.width = 300;
-   chart.height = 200;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.lineTo(p3.x, p3.y);
+        ctx.closePath();
 
-   const data = [80, 50, 100];
-   const colors = ["#ff00ff", "#00ffff", "#ffaa00"];
+        const color = `hsla(${p1.hue}, 100%, 65%, 0.05)`;
+        ctx.fillStyle = color;
+        ctx.shadowBlur = 40;
+        ctx.shadowColor = color;
+        ctx.fill();
+      }
+    }
 
-   function drawChart() {
-     cctx.clearRect(0, 0, chart.width, chart.height);
+    function drawRadar() {
+      const rw = radar.width;
+      const rh = radar.height;
+      const cx = rw / 2;
+      const cy = rh / 2;
+      const radius = Math.min(rw, rh) * 0.30;
 
-     data.forEach((val, i) => {
-       const x = 40 + i * 80;
-       const y = 160 - val;
+      rctx.clearRect(0, 0, rw, rh);
 
-       cctx.fillStyle = colors[i];
-       cctx.shadowBlur = 25;
-       cctx.shadowColor = colors[i];
+      for (let level = 1; level <= 4; level++) {
+        const r = radius * (level / 4);
 
-       cctx.fillRect(x, y, 40, val);
-     });
-   }
+        rctx.beginPath();
+        radarLabels.forEach((_, i) => {
+          const angle = (Math.PI * 2 / radarLabels.length) * i - Math.PI / 2;
+          const x = cx + Math.cos(angle) * r;
+          const y = cy + Math.sin(angle) * r;
+          if (i === 0) rctx.moveTo(x, y);
+          else rctx.lineTo(x, y);
+        });
+        rctx.closePath();
+        rctx.strokeStyle = "rgba(130, 255, 230, 0.14)";
+        rctx.lineWidth = 1;
+        rctx.stroke();
+      }
 
-   drawChart();
+      radarLabels.forEach((label, i) => {
+        const angle = (Math.PI * 2 / radarLabels.length) * i - Math.PI / 2;
+        const x = cx + Math.cos(angle) * radius;
+        const y = cy + Math.sin(angle) * radius;
 
-// Radar Chart
-const radar = document.getElementById("radar");
-const rctx = radar.getContext("2d");
+        rctx.beginPath();
+        rctx.moveTo(cx, cy);
+        rctx.lineTo(x, y);
+        rctx.strokeStyle = "rgba(130, 255, 230, 0.22)";
+        rctx.lineWidth = 1;
+        rctx.stroke();
 
-radar.width = 250;
-radar.height = 250;
+        const lx = cx + Math.cos(angle) * (radius + 26);
+        const ly = cy + Math.sin(angle) * (radius + 26);
 
-const labels = ["Art", "Energy", "Flow", "Emotion"];
-const values = [0.9, 0.7, 0.8, 0.6];
+        rctx.fillStyle = "rgba(255,255,255,0.82)";
+        rctx.font = "13px Arial";
+        rctx.textAlign = "center";
+        rctx.fillText(label, lx, ly);
+      });
 
-function drawRadar() {
-  const cx = 125;
-  const cy = 125;
-  const radius = 80;
+      rctx.beginPath();
+      radarValues.forEach((val, i) => {
+        const angle = (Math.PI * 2 / radarValues.length) * i - Math.PI / 2;
+        const x = cx + Math.cos(angle) * radius * val;
+        const y = cy + Math.sin(angle) * radius * val;
+        if (i === 0) rctx.moveTo(x, y);
+        else rctx.lineTo(x, y);
+      });
+      rctx.closePath();
 
-  rctx.clearRect(0, 0, 250, 250);
+      rctx.fillStyle = "rgba(80, 255, 200, 0.18)";
+      rctx.shadowBlur = 24;
+      rctx.shadowColor = "#58ffe7";
+      rctx.fill();
 
-  // Linien
-  labels.forEach((label, i) => {
-    const angle = (Math.PI * 2 / labels.length) * i - Math.PI / 2;
-    const x = cx + Math.cos(angle) * radius;
-    const y = cy + Math.sin(angle) * radius;
+      rctx.strokeStyle = "#58ffe7";
+      rctx.lineWidth = 2;
+      rctx.stroke();
 
-    rctx.beginPath();
-    rctx.moveTo(cx, cy);
-    rctx.lineTo(x, y);
-    rctx.strokeStyle = "rgba(0,255,200,0.4)";
-    rctx.stroke();
-  });
+      radarValues.forEach((val, i) => {
+        const angle = (Math.PI * 2 / radarValues.length) * i - Math.PI / 2;
+        const x = cx + Math.cos(angle) * radius * val;
+        const y = cy + Math.sin(angle) * radius * val;
 
-  // Fläche
-  rctx.beginPath();
+        rctx.beginPath();
+        rctx.arc(x, y, 4, 0, Math.PI * 2);
+        rctx.fillStyle = "#bafff3";
+        rctx.shadowBlur = 18;
+        rctx.shadowColor = "#58ffe7";
+        rctx.fill();
+      });
+    }
 
-  values.forEach((val, i) => {
-    const angle = (Math.PI * 2 / values.length) * i - Math.PI / 2;
-    const x = cx + Math.cos(angle) * radius * val;
-    const y = cy + Math.sin(angle) * radius * val;
+    function animate() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.025)";
+      ctx.fillRect(0, 0, w, h);
 
-    if (i === 0) rctx.moveTo(x, y);
-    else rctx.lineTo(x, y);
-  });
+      for (let i = points.length - 1; i >= 0; i--) {
+        points[i].update();
+        if (points[i].life <= 0) {
+          points.splice(i, 1);
+        }
+      }
 
-  rctx.closePath();
+      drawConnections();
+      drawTriangles();
+      drawRadar();
 
-  rctx.fillStyle = "rgba(0,255,200,0.2)";
-  rctx.shadowBlur = 30;
-  rctx.shadowColor = "#00ffff";
-  rctx.fill();
+      requestAnimationFrame(animate);
+    }
 
-  rctx.strokeStyle = "#00ffff";
-  rctx.stroke();
-}
-
-drawRadar();
-
-  
-</script> 
-
-
+    animate();
+  </script>
 </body>
 </html>
-
-
