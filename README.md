@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="header.png" width="100%" />
+</p>
+
 # ✶ Lightscapes – Neon Energy Generator
 
 ⟡ A digital space where light, movement and energy become visible.
