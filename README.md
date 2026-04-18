@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="header.png" width="100%" />
+  <img src="pic 2.png" width="100%" />
 </p>
 
 # ✶ Lightscapes – Neon Energy Generator
