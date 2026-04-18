@@ -1,361 +1,113 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lightscapes – Neon Energy Generator</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<script>
+const canvas = document.getElementById("art");
+const ctx = canvas.getContext("2d");
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: radial-gradient(circle at center, #17001f 0%, #090011 45%, #020008 75%, #000000 100%);
-      font-family: Arial, sans-serif;
-    }
+let w = canvas.width = window.innerWidth;
+let h = canvas.height = window.innerHeight;
 
-    body {
-      position: relative;
-    }
+let points = [];
+let hue = 0;
 
-    canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
+window.addEventListener("resize", () => {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+});
 
-    .overlay {
-      position: absolute;
-      top: 24px;
-      left: 24px;
-      z-index: 10;
-      max-width: 430px;
-      padding: 22px 24px;
-      border-radius: 24px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(12px);
-      box-shadow:
-        0 0 30px rgba(200, 80, 255, 0.12),
-        0 0 60px rgba(0, 220, 255, 0.08);
-    }
+class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.vx = (Math.random() - 0.5) * 2;
+    this.vy = (Math.random() - 0.5) * 2;
+    this.life = 200;
+    this.hue = hue + Math.random() * 120;
+  }
 
-    .overlay h1 {
-      font-size: 1.9rem;
-      margin-bottom: 10px;
-      color: #f4c7ff;
-      letter-spacing: 0.03em;
-      text-shadow:
-        0 0 10px rgba(255, 180, 255, 0.45),
-        0 0 22px rgba(180, 80, 255, 0.35);
-    }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.vx *= 0.995;
+    this.vy *= 0.995;
+    this.life -= 1;
+  }
+}
 
-    .overlay p {
-      color: rgba(255, 255, 255, 0.88);
-      line-height: 1.55;
-      font-size: 0.98rem;
-    }
+function addPoints(x, y) {
+  for (let i = 0; i < 6; i++) {
+    points.push(new Point(x, y));
+  }
+}
 
-    .signature {
-      margin-top: 12px;
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 0.84rem;
-      letter-spacing: 0.04em;
-    }
+window.addEventListener("mousemove", (e) => {
+  addPoints(e.x, e.y);
+  hue += 1.5;
+});
 
-    .hint {
-      position: absolute;
-      right: 24px;
-      bottom: 24px;
-      z-index: 10;
-      padding: 12px 16px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.75);
-      font-size: 0.9rem;
-      backdrop-filter: blur(8px);
-    }
+function drawConnections() {
+  for (let i = 0; i < points.length; i++) {
+    for (let j = i + 1; j < points.length; j++) {
+      const dx = points[i].x - points[j].x;
+      const dy = points[i].y - points[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
 
-    @media (max-width: 640px) {
-      .overlay {
-        top: 16px;
-        left: 16px;
-        right: 16px;
-        max-width: unset;
-        padding: 18px;
-      }
-
-      .overlay h1 {
-        font-size: 1.5rem;
-      }
-
-      .hint {
-        left: 16px;
-        right: 16px;
-        bottom: 16px;
-        text-align: center;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="overlay">
-    <h1>Lightscapes</h1>
-    <p>
-      Move through darkness and create glowing fields of neon energy.
-      Every gesture leaves a luminous trace — soft, flowing and alive.
-    </p>
-    <div class="signature">Interactive visual artwork</div>
-  </div>
-
-  <div class="hint">Move your mouse slowly for long glowing trails ✧</div>
-
-  <canvas id="art"></canvas>
-
-  <script>
-    const canvas = document.getElementById("art");
-    const ctx = canvas.getContext("2d");
-
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
-
-    let particles = [];
-    let waves = [];
-    let hueBase = 270;
-    let lastX = width / 2;
-    let lastY = height / 2;
-    let mouseMoved = false;
-
-    function resizeCanvas() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    }
-
-    window.addEventListener("resize", resizeCanvas);
-
-    class Particle {
-      constructor(x, y, angleOffset = 0) {
-        this.x = x;
-        this.y = y;
-        this.originX = x;
-        this.originY = y;
-
-        const speed = Math.random() * 1.8 + 0.3;
-        const angle = Math.random() * Math.PI * 2 + angleOffset;
-
-        this.vx = Math.cos(angle) * speed;
-        this.vy = Math.sin(angle) * speed;
-
-        this.size = Math.random() * 8 + 3;
-        this.life = 240 + Math.random() * 120;
-        this.maxLife = this.life;
-
-        this.hue = hueBase + Math.random() * 120;
-        this.alpha = 0.95;
-        this.wobble = Math.random() * 0.05 + 0.01;
-        this.wobbleOffset = Math.random() * Math.PI * 2;
-      }
-
-      update() {
-        const age = 1 - this.life / this.maxLife;
-
-        this.x += this.vx + Math.sin(age * 10 + this.wobbleOffset) * this.wobble * 10;
-        this.y += this.vy + Math.cos(age * 10 + this.wobbleOffset) * this.wobble * 10;
-
-        this.vx *= 0.992;
-        this.vy *= 0.992;
-
-        this.size *= 0.996;
-        this.life -= 1.2;
-
-        if (this.life < this.maxLife * 0.55) {
-          this.alpha *= 0.994;
-        }
-      }
-
-      draw() {
-        const glowColor = `hsla(${this.hue}, 100%, 68%, ${this.alpha})`;
+      if (dist < 160) {
+        const alpha = 1 - dist / 160;
 
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = glowColor;
-        ctx.shadowBlur = 30;
-        ctx.shadowColor = glowColor;
-        ctx.fill();
+        ctx.moveTo(points[i].x, points[i].y);
+        ctx.lineTo(points[j].x, points[j].y);
 
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size * 0.45, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${this.hue + 20}, 100%, 82%, ${this.alpha * 0.7})`;
-        ctx.shadowBlur = 18;
-        ctx.shadowColor = `hsla(${this.hue + 20}, 100%, 80%, ${this.alpha * 0.7})`;
-        ctx.fill();
-      }
+        const color = `hsla(${(points[i].hue + points[j].hue)/2}, 100%, 60%, ${alpha * 0.2})`;
 
-      isDead() {
-        return this.life <= 0 || this.size < 0.25 || this.alpha < 0.03;
-      }
-    }
-
-    class WaveRing {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.radius = 8;
-        this.life = 120;
-        this.maxLife = this.life;
-        this.hue = hueBase + Math.random() * 100;
-      }
-
-      update() {
-        this.radius += 1.4;
-        this.life -= 1;
-      }
-
-      draw() {
-        const alpha = this.life / this.maxLife * 0.35;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `hsla(${this.hue}, 100%, 70%, ${alpha})`;
+        ctx.strokeStyle = color;
         ctx.lineWidth = 1.2;
-        ctx.shadowBlur = 18;
-        ctx.shadowColor = `hsla(${this.hue}, 100%, 70%, ${alpha})`;
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = color;
+
         ctx.stroke();
       }
-
-      isDead() {
-        return this.life <= 0;
-      }
     }
+  }
+}
 
-    function addParticles(x, y, amount = 10) {
-      const dx = x - lastX;
-      const dy = y - lastY;
-      const angle = Math.atan2(dy, dx);
+function drawTriangles() {
+  for (let i = 0; i < points.length - 2; i++) {
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2];
 
-      for (let i = 0; i < amount; i++) {
-        particles.push(new Particle(x, y, angle * 0.3));
-      }
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.lineTo(p3.x, p3.y);
+    ctx.closePath();
 
-      if (Math.random() > 0.7) {
-        waves.push(new WaveRing(x, y));
-      }
+    const color = `hsla(${p1.hue}, 100%, 60%, 0.05)`;
 
-      hueBase += 1.6;
-      if (hueBase > 360) hueBase = 220;
+    ctx.fillStyle = color;
+    ctx.shadowBlur = 30;
+    ctx.shadowColor = color;
+
+    ctx.fill();
+  }
+}
+
+function animate() {
+  ctx.fillStyle = "rgba(0,0,0,0.03)";
+  ctx.fillRect(0, 0, w, h);
+
+  for (let i = points.length - 1; i >= 0; i--) {
+    points[i].update();
+    if (points[i].life <= 0) {
+      points.splice(i, 1);
     }
+  }
 
-    function connectGlow() {
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+  drawConnections();
+  drawTriangles();
 
-          if (distance < 95) {
-            const alpha = (1 - distance / 95) * 0.08;
-            const hue = (particles[i].hue + particles[j].hue) / 2;
+  requestAnimationFrame(animate);
+}
 
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `hsla(${hue}, 100%, 70%, ${alpha})`;
-            ctx.lineWidth = 1;
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = `hsla(${hue}, 100%, 70%, ${alpha})`;
-            ctx.stroke();
-          }
-        }
-      }
-    }
-
-    window.addEventListener("mousemove", (e) => {
-      mouseMoved = true;
-      addParticles(e.clientX, e.clientY, 12);
-      lastX = e.clientX;
-      lastY = e.clientY;
-    });
-
-    window.addEventListener("touchmove", (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      mouseMoved = true;
-      addParticles(touch.clientX, touch.clientY, 14);
-      lastX = touch.clientX;
-      lastY = touch.clientY;
-    }, { passive: false });
-
-    window.addEventListener("click", (e) => {
-      for (let i = 0; i < 40; i++) {
-        particles.push(new Particle(e.clientX, e.clientY));
-      }
-      for (let i = 0; i < 3; i++) {
-        waves.push(new WaveRing(e.clientX, e.clientY));
-      }
-    });
-
-    function ambientPulse() {
-      if (!mouseMoved && Math.random() > 0.94) {
-        const x = width * (0.3 + Math.random() * 0.4);
-        const y = height * (0.3 + Math.random() * 0.4);
-        addParticles(x, y, 3);
-      }
-    }
-
-    function drawBackgroundGlow() {
-      const gradient = ctx.createRadialGradient(
-        width * 0.5,
-        height * 0.5,
-        0,
-        width * 0.5,
-        height * 0.5,
-        Math.max(width, height) * 0.55
-      );
-
-      gradient.addColorStop(0, "rgba(120, 20, 180, 0.045)");
-      gradient.addColorStop(0.35, "rgba(0, 190, 255, 0.025)");
-      gradient.addColorStop(0.7, "rgba(255, 0, 200, 0.018)");
-      gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
-
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-    }
-
-    function animate() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.018)";
-      ctx.fillRect(0, 0, width, height);
-
-      drawBackgroundGlow();
-      ambientPulse();
-
-      for (let i = waves.length - 1; i >= 0; i--) {
-        waves[i].update();
-        waves[i].draw();
-
-        if (waves[i].isDead()) {
-          waves.splice(i, 1);
-        }
-      }
-
-      for (let i = particles.length - 1; i >= 0; i--) {
-        particles[i].update();
-        particles[i].draw();
-
-        if (particles[i].isDead()) {
-          particles.splice(i, 1);
-        }
-      }
-
-      connectGlow();
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-  </script>
-</body>
-</html>
+animate();
+</script>
