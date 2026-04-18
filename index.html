@@ -3,14 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lightscapes – Neon Energy Generator</title>
+  <title>Lightscapes – Energy Geometry</title>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
       width: 100%;
@@ -21,10 +17,10 @@
     }
 
     body {
-      position: relative;
       background:
-        radial-gradient(circle at center, rgba(90, 0, 120, 0.25) 0%, rgba(0, 0, 0, 0) 40%),
-        radial-gradient(circle at 70% 30%, rgba(0, 180, 255, 0.12) 0%, rgba(0, 0, 0, 0) 35%),
+        radial-gradient(circle at center, rgba(120, 0, 180, 0.35) 0%, transparent 45%),
+        radial-gradient(circle at 70% 30%, rgba(0, 200, 255, 0.25) 0%, transparent 40%),
+        radial-gradient(circle at 30% 70%, rgba(255, 200, 0, 0.18) 0%, transparent 35%),
         #000;
     }
 
@@ -40,177 +36,165 @@
       left: 24px;
       z-index: 10;
       max-width: 420px;
-      padding: 20px 22px;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 0 30px rgba(180, 0, 255, 0.12);
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 0 40px rgba(180,0,255,0.15);
     }
 
     .overlay h1 {
       font-size: 1.8rem;
-      margin-bottom: 10px;
-      color: #f7d7ff;
-      text-shadow: 0 0 18px rgba(255, 100, 255, 0.35);
+      color: #f5d7ff;
+      text-shadow: 0 0 25px rgba(255,100,255,0.5);
     }
 
     .overlay p {
-      color: rgba(255,255,255,0.82);
+      margin-top: 10px;
+      color: rgba(255,255,255,0.8);
       line-height: 1.5;
-      font-size: 0.98rem;
     }
 
     .signature {
       margin-top: 12px;
-      font-size: 0.84rem;
-      color: rgba(255,255,255,0.55);
-    }
-
-    @media (max-width: 700px) {
-      .overlay {
-        top: 16px;
-        left: 16px;
-        right: 16px;
-        max-width: none;
-        padding: 16px 18px;
-      }
-
-      .overlay h1 {
-        font-size: 1.45rem;
-      }
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
     }
   </style>
 </head>
 <body>
-  <div class="overlay">
-    <h1>Lightscapes</h1>
-    <p>
-      Move through darkness and create geometric light structures,
-      glowing connections and layered neon energy.
-    </p>
-    <div class="signature">Interactive visual artwork</div>
-  </div>
 
-  <canvas id="art"></canvas>
+<div class="overlay">
+  <h1>Lightscapes</h1>
+  <p>
+    A space where light becomes structure,  
+    and movement reveals hidden energy.
+  </p>
+  <div class="signature">Interactive Light Art</div>
+</div>
 
-  <script>
-    const canvas = document.getElementById("art");
-    const ctx = canvas.getContext("2d");
+<canvas id="art"></canvas>
 
-    let w = canvas.width = window.innerWidth;
-    let h = canvas.height = window.innerHeight;
+<script>
+const canvas = document.getElementById("art");
+const ctx = canvas.getContext("2d");
 
-    let points = [];
-    let hue = 0;
+let w = canvas.width = window.innerWidth;
+let h = canvas.height = window.innerHeight;
 
-    window.addEventListener("resize", () => {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-    });
+let points = [];
+let hue = 260;
 
-    class Point {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.vx = (Math.random() - 0.5) * 2;
-        this.vy = (Math.random() - 0.5) * 2;
-        this.life = 200;
-        this.hue = hue + Math.random() * 120;
-      }
+window.addEventListener("resize", () => {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+});
 
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.vx *= 0.995;
-        this.vy *= 0.995;
-        this.life -= 1;
-      }
-    }
+class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
 
-    function addPoints(x, y) {
-      for (let i = 0; i < 6; i++) {
-        points.push(new Point(x, y));
-      }
-    }
+    this.vx = (Math.random() - 0.5) * 1.5;
+    this.vy = (Math.random() - 0.5) * 1.5;
 
-    window.addEventListener("mousemove", (e) => {
-      addPoints(e.x, e.y);
-      hue += 1.5;
-    });
+    this.life = 280;
+    this.hue = hue + Math.random() * 80;
+  }
 
-    window.addEventListener("touchmove", (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      addPoints(touch.clientX, touch.clientY);
-      hue += 1.5;
-    }, { passive: false });
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
 
-    function drawConnections() {
-      for (let i = 0; i < points.length; i++) {
-        for (let j = i + 1; j < points.length; j++) {
-          const dx = points[i].x - points[j].x;
-          const dy = points[i].y - points[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+    this.vx *= 0.992;
+    this.vy *= 0.992;
 
-          if (dist < 160) {
-            const alpha = 1 - dist / 160;
+    this.life -= 1;
+  }
+}
 
-            ctx.beginPath();
-            ctx.moveTo(points[i].x, points[i].y);
-            ctx.lineTo(points[j].x, points[j].y);
+function addPoints(x, y) {
+  for (let i = 0; i < 8; i++) {
+    points.push(new Point(x, y));
+  }
+}
 
-            const color = `hsla(${(points[i].hue + points[j].hue) / 2}, 100%, 60%, ${alpha * 0.2})`;
+window.addEventListener("mousemove", (e) => {
+  addPoints(e.x, e.y);
+  hue += 0.6;
+});
 
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 1.2;
-            ctx.shadowBlur = 25;
-            ctx.shadowColor = color;
-            ctx.stroke();
-          }
-        }
-      }
-    }
+function drawConnections() {
+  for (let i = 0; i < points.length; i++) {
+    for (let j = i + 1; j < points.length; j++) {
 
-    function drawTriangles() {
-      for (let i = 0; i < points.length - 2; i++) {
-        const p1 = points[i];
-        const p2 = points[i + 1];
-        const p3 = points[i + 2];
+      const dx = points[i].x - points[j].x;
+      const dy = points[i].y - points[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+
+      if (dist < 180) {
+
+        const alpha = (1 - dist / 180) * 0.25;
+
+        const color = `hsla(${(points[i].hue + points[j].hue)/2}, 100%, 65%, ${alpha})`;
 
         ctx.beginPath();
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.lineTo(p3.x, p3.y);
-        ctx.closePath();
+        ctx.moveTo(points[i].x, points[i].y);
+        ctx.lineTo(points[j].x, points[j].y);
 
-        const color = `hsla(${p1.hue}, 100%, 60%, 0.05)`;
-
-        ctx.fillStyle = color;
-        ctx.shadowBlur = 30;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.4;
+        ctx.shadowBlur = 40;
         ctx.shadowColor = color;
-        ctx.fill();
+
+        ctx.stroke();
       }
     }
+  }
+}
 
-    function animate() {
-      ctx.fillStyle = "rgba(0,0,0,0.03)";
-      ctx.fillRect(0, 0, w, h);
+function drawTriangles() {
+  for (let i = 0; i < points.length - 2; i++) {
 
-      for (let i = points.length - 1; i >= 0; i--) {
-        points[i].update();
-        if (points[i].life <= 0) {
-          points.splice(i, 1);
-        }
-      }
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2];
 
-      drawConnections();
-      drawTriangles();
+    const color = `hsla(${p1.hue}, 100%, 65%, 0.07)`;
 
-      requestAnimationFrame(animate);
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.lineTo(p3.x, p3.y);
+    ctx.closePath();
+
+    ctx.fillStyle = color;
+    ctx.shadowBlur = 60;
+    ctx.shadowColor = color;
+    ctx.fill();
+  }
+}
+
+function animate() {
+  ctx.fillStyle = "rgba(0,0,0,0.02)";
+  ctx.fillRect(0, 0, w, h);
+
+  for (let i = points.length - 1; i >= 0; i--) {
+    points[i].update();
+    if (points[i].life <= 0) {
+      points.splice(i, 1);
     }
+  }
 
-    animate();
-  </script>
+  drawConnections();
+  drawTriangles();
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
 </body>
 </html>
