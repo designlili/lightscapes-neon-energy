@@ -4,33 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lightscapes – Neon Energy Generator</title>
-
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
       width: 100%;
       height: 100%;
       overflow: hidden;
-      font-family: Arial, sans-serif;
       background: #000;
+      font-family: Arial, sans-serif;
     }
 
     body {
       position: relative;
       background:
-        radial-gradient(circle at 50% 50%, rgba(120, 0, 180, 0.25) 0%, transparent 38%),
-        radial-gradient(circle at 75% 25%, rgba(0, 220, 255, 0.12) 0%, transparent 28%),
-        radial-gradient(circle at 20% 75%, rgba(255, 180, 0, 0.10) 0%, transparent 24%),
+        radial-gradient(circle at center, rgba(120, 0, 180, 0.22) 0%, transparent 40%),
+        radial-gradient(circle at 75% 25%, rgba(0, 220, 255, 0.10) 0%, transparent 30%),
+        radial-gradient(circle at 20% 75%, rgba(255, 180, 0, 0.08) 0%, transparent 24%),
         #000;
-    }
-
-    canvas {
-      display: block;
     }
 
     #art {
@@ -38,108 +29,56 @@
       inset: 0;
       width: 100%;
       height: 100%;
+      display: block;
       z-index: 1;
     }
 
     #radar {
       position: absolute;
-      top: 26px;
-      right: 26px;
-      width: 270px;
-      height: 270px;
+      top: 24px;
+      right: 24px;
+      width: 240px;
+      height: 240px;
       z-index: 5;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 22px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
       backdrop-filter: blur(8px);
-      box-shadow:
-        0 0 30px rgba(0, 255, 255, 0.10),
-        0 0 45px rgba(180, 0, 255, 0.08);
     }
 
     .overlay {
       position: absolute;
-      top: 26px;
-      left: 26px;
+      top: 24px;
+      left: 24px;
       z-index: 6;
-      max-width: 430px;
-      padding: 20px 22px;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      max-width: 420px;
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
       backdrop-filter: blur(10px);
-      box-shadow: 0 0 35px rgba(180, 0, 255, 0.12);
+      box-shadow: 0 0 30px rgba(180,0,255,0.12);
     }
 
     .overlay h1 {
-      font-size: 1.9rem;
-      color: #f2d8ff;
+      color: #f3d8ff;
       margin-bottom: 10px;
-      text-shadow: 0 0 18px rgba(255, 120, 255, 0.35);
+      font-size: 1.8rem;
+      text-shadow: 0 0 18px rgba(255, 100, 255, 0.35);
     }
 
     .overlay p {
-      color: rgba(255, 255, 255, 0.84);
-      line-height: 1.55;
-      font-size: 0.98rem;
+      color: rgba(255,255,255,0.84);
+      line-height: 1.5;
     }
 
-    .signature {
-      margin-top: 12px;
-      color: rgba(255, 255, 255, 0.55);
-      font-size: 0.83rem;
-      letter-spacing: 0.04em;
-    }
-
-    .hint {
-      position: absolute;
-      left: 26px;
-      bottom: 26px;
-      z-index: 6;
-      padding: 12px 16px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.07);
-      color: rgba(255,255,255,0.72);
-      font-size: 0.9rem;
-      backdrop-filter: blur(8px);
-    }
-
-    @media (max-width: 900px) {
-      #radar {
-        top: auto;
-        right: 16px;
-        bottom: 16px;
-        width: 220px;
-        height: 220px;
-      }
-
+    @media (max-width: 700px) {
+      #radar { display: none; }
       .overlay {
         top: 16px;
         left: 16px;
         right: 16px;
         max-width: none;
-      }
-
-      .hint {
-        left: 16px;
-        bottom: 16px;
-        max-width: 52%;
-      }
-    }
-
-    @media (max-width: 640px) {
-      #radar {
-        display: none;
-      }
-
-      .hint {
-        right: 16px;
-        max-width: none;
-      }
-
-      .overlay h1 {
-        font-size: 1.5rem;
       }
     }
   </style>
@@ -147,15 +86,8 @@
 <body>
   <div class="overlay">
     <h1>Lightscapes</h1>
-    <p>
-      A digital space where light, movement and energy become visible.
-      Move your mouse and create glowing geometric fields, flowing neon lines
-      and layered visual structures.
-    </p>
-    <div class="signature">Interactive visual artwork</div>
+    <p>Move your mouse and create glowing neon structures and flowing energy.</p>
   </div>
-
-  <div class="hint">Move slowly for longer glowing structures ✧</div>
 
   <canvas id="art"></canvas>
   <canvas id="radar"></canvas>
@@ -173,16 +105,11 @@
     let points = [];
     let hue = 260;
 
-    const radarLabels = ["Art", "Energy", "Flow", "Emotion"];
-    const radarValues = [0.92, 0.78, 0.84, 0.68];
-
     function resizeAll() {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
-
-      const radarRect = radar.getBoundingClientRect();
-      radar.width = Math.max(220, Math.floor(radarRect.width));
-      radar.height = Math.max(220, Math.floor(radarRect.height));
+      radar.width = 240;
+      radar.height = 240;
     }
 
     resizeAll();
@@ -194,7 +121,7 @@
         this.y = y;
         this.vx = (Math.random() - 0.5) * 1.8;
         this.vy = (Math.random() - 0.5) * 1.8;
-        this.life = 240;
+        this.life = 220;
         this.hue = hue + Math.random() * 90;
       }
 
@@ -226,12 +153,6 @@
       hue += 0.8;
       if (hue > 360) hue = 220;
     }, { passive: false });
-
-    window.addEventListener("click", (e) => {
-      for (let i = 0; i < 24; i++) {
-        points.push(new Point(e.clientX, e.clientY));
-      }
-    });
 
     function drawConnections() {
       for (let i = 0; i < points.length; i++) {
@@ -271,62 +192,56 @@
 
         const color = `hsla(${p1.hue}, 100%, 65%, 0.05)`;
         ctx.fillStyle = color;
-        ctx.shadowBlur = 40;
+        ctx.shadowBlur = 38;
         ctx.shadowColor = color;
         ctx.fill();
       }
     }
 
     function drawRadar() {
-      const rw = radar.width;
-      const rh = radar.height;
-      const cx = rw / 2;
-      const cy = rh / 2;
-      const radius = Math.min(rw, rh) * 0.30;
+      rctx.clearRect(0, 0, radar.width, radar.height);
 
-      rctx.clearRect(0, 0, rw, rh);
+      const cx = radar.width / 2;
+      const cy = radar.height / 2;
+      const radius = 70;
+      const labels = ["Art", "Energy", "Flow", "Emotion"];
+      const values = [0.92, 0.78, 0.84, 0.68];
 
       for (let level = 1; level <= 4; level++) {
         const r = radius * (level / 4);
-
         rctx.beginPath();
-        radarLabels.forEach((_, i) => {
-          const angle = (Math.PI * 2 / radarLabels.length) * i - Math.PI / 2;
+        labels.forEach((_, i) => {
+          const angle = (Math.PI * 2 / labels.length) * i - Math.PI / 2;
           const x = cx + Math.cos(angle) * r;
           const y = cy + Math.sin(angle) * r;
           if (i === 0) rctx.moveTo(x, y);
           else rctx.lineTo(x, y);
         });
         rctx.closePath();
-        rctx.strokeStyle = "rgba(130, 255, 230, 0.14)";
-        rctx.lineWidth = 1;
+        rctx.strokeStyle = "rgba(130,255,230,0.14)";
         rctx.stroke();
       }
 
-      radarLabels.forEach((label, i) => {
-        const angle = (Math.PI * 2 / radarLabels.length) * i - Math.PI / 2;
+      labels.forEach((label, i) => {
+        const angle = (Math.PI * 2 / labels.length) * i - Math.PI / 2;
         const x = cx + Math.cos(angle) * radius;
         const y = cy + Math.sin(angle) * radius;
 
         rctx.beginPath();
         rctx.moveTo(cx, cy);
         rctx.lineTo(x, y);
-        rctx.strokeStyle = "rgba(130, 255, 230, 0.22)";
-        rctx.lineWidth = 1;
+        rctx.strokeStyle = "rgba(130,255,230,0.2)";
         rctx.stroke();
 
-        const lx = cx + Math.cos(angle) * (radius + 26);
-        const ly = cy + Math.sin(angle) * (radius + 26);
-
-        rctx.fillStyle = "rgba(255,255,255,0.82)";
-        rctx.font = "13px Arial";
+        rctx.fillStyle = "rgba(255,255,255,0.8)";
+        rctx.font = "12px Arial";
         rctx.textAlign = "center";
-        rctx.fillText(label, lx, ly);
+        rctx.fillText(label, cx + Math.cos(angle) * (radius + 20), cy + Math.sin(angle) * (radius + 20));
       });
 
       rctx.beginPath();
-      radarValues.forEach((val, i) => {
-        const angle = (Math.PI * 2 / radarValues.length) * i - Math.PI / 2;
+      values.forEach((val, i) => {
+        const angle = (Math.PI * 2 / values.length) * i - Math.PI / 2;
         const x = cx + Math.cos(angle) * radius * val;
         const y = cy + Math.sin(angle) * radius * val;
         if (i === 0) rctx.moveTo(x, y);
@@ -334,27 +249,14 @@
       });
       rctx.closePath();
 
-      rctx.fillStyle = "rgba(80, 255, 200, 0.18)";
-      rctx.shadowBlur = 24;
+      rctx.fillStyle = "rgba(88,255,231,0.16)";
+      rctx.shadowBlur = 20;
       rctx.shadowColor = "#58ffe7";
       rctx.fill();
 
       rctx.strokeStyle = "#58ffe7";
       rctx.lineWidth = 2;
       rctx.stroke();
-
-      radarValues.forEach((val, i) => {
-        const angle = (Math.PI * 2 / radarValues.length) * i - Math.PI / 2;
-        const x = cx + Math.cos(angle) * radius * val;
-        const y = cy + Math.sin(angle) * radius * val;
-
-        rctx.beginPath();
-        rctx.arc(x, y, 4, 0, Math.PI * 2);
-        rctx.fillStyle = "#bafff3";
-        rctx.shadowBlur = 18;
-        rctx.shadowColor = "#58ffe7";
-        rctx.fill();
-      });
     }
 
     function animate() {
