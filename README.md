@@ -32,6 +32,19 @@ Move your mouse or touch the screen and create:
 Nothing is static.  
 Everything is in motion.
 
+
+## ✧ Visual Impressions
+
+<p align="center">
+  <img src="preview.gif" width="80%" />
+</p>
+
+<p align="center">
+  <img src="header.png" width="45%" />
+  <img src="detail.png" width="45%" />
+</p>
+
+
 ---
 
 ## ☽ Artistic Direction
