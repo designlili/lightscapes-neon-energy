@@ -40,7 +40,6 @@ Everything is in motion.
 </p>
 
 <p align="center">
-  <img src="header.png" width="45%" />
   <img src="detail.png" width="45%" />
 </p>
 
