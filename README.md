@@ -4,82 +4,66 @@
 
 # ✶ Lightscapes – Neon Energy Generator
 
-⟡ A digital space where light, movement and energy become visible.
+⟡ *A digital space where light, movement and energy become visible*
+
+---
+
+## ✧ Live Experience
+👉 https://designlili.github.io/lightscapes-neon-energy/
+
+Move your mouse or touch the screen and create your own light.
 
 ---
 
 ## ❂ Concept
+Lightscapes ist mehr als ein visuelles Projekt.  
+Es ist eine Verbindung aus Bewegung, Energie und Intuition.
 
-Lightscapes is not just a visual experiment.  
-It is an exploration of energy, intuition and presence.
+Jede Interaktion erzeugt Licht.  
+Jede Bewegung hinterlässt Spuren.
 
-Every movement leaves a trace.  
-Every interaction becomes light.
-
-The project transforms simple motion into glowing neon particles and flowing energy fields – creating a living artwork that changes with every moment.
+So entsteht ein lebendiges Kunstwerk, das sich in jedem Moment verändert.
 
 ---
 
 ## ✶ Experience
+Create in real time:
 
-Move your mouse or touch the screen and create:
-
-✧ luminous neon trails  
-✧ soft flowing light  
-✧ dynamic energy patterns  
-✧ a unique, unrepeatable visual moment  
+✧ neon light trails  
+✧ flowing energy fields  
+✧ dynamic particle motion  
+✧ unique, unrepeatable visuals  
 
 Nothing is static.  
 Everything is in motion.
 
+---
 
 ## ✧ Visual Impressions
-
-<p align="center">
-  <img src="preview.gif" width="80%" />
-</p>
-
-<p align="center">
-  <img src="detail.png" width="45%" />
-</p>
-
+![Lightscapes Preview](screenshots/lightscapes-preview.png)
 
 ---
 
 ## ☽ Artistic Direction
-
 Inspired by:
 
-⟡ ultraviolet and neon aesthetics  
-⟡ aura colors and emotional frequency  
-⟡ spiritual geometry and inner balance  
-⟡ darkness as a space for light to emerge  
-
----
-
-## ✧ Live Artwork
-
-⟡ https://designlili.github.io/lightscapes-neon-energy/
+⟡ neon & ultraviolet aesthetics  
+⟡ aura and emotional frequencies  
+⟡ spiritual geometry  
+⟡ light emerging from darkness  
 
 ---
 
 ## ❂ Vision
+Lightscapes ist Teil einer größeren Vision:
 
-Lightscapes is part of a larger creative journey.
+**art ✶ healing ✶ digital expression**
 
-A vision to combine:
-art ✶ healing ✶ digital expression
-
-into immersive experiences that connect inner worlds with visual reality.
-
-It is an invitation  
-to explore  
-to feel  
-to create  
+Ziel ist es, immersive Erfahrungen zu erschaffen,  
+die innere Wahrnehmung sichtbar machen.
 
 ---
 
 ## ⟡ Created by
-
-Lili Kárándi  
+**Lili Kárándi**  
 Artist | Lightscapes Creator
