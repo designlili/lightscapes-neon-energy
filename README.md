@@ -40,7 +40,7 @@ Everything is in motion.
 ---
 
 ## ✧ Visual Impressions
-![Lightscapes Preview](screenshots_lightscapes.png)
+![Lightscapes Preview](lightscapes.png)
 
 ---
 
